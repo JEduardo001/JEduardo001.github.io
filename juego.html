@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body{
+            background-color: #000000;
+        }
+        canvas{
+            background-color: rgb(0, 0, 0);
+        }
+        #gif {
+            position: absolute;
+            top: 0px;
+            left: -150px;
+            z-index: 1;
+            width: 500px;
+            height: 300px;
+        }
+        #ventanaGameOver{
+            display: none;
+            position: absolute;
+            top: 100px;
+            left: 300px;
+            width: 50%;
+            height: 50%;
+            background-color: rgba(139, 23, 23, 0.488);
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+            border-radius: 50px;
+        }
+        #ventanaGameOver h1 {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 5em;
+            margin: 0;
+          }
+          #ventanaGameOver p {
+            font-size: 3em;
+            color: rgba(255, 255, 255, 0.8);
+
+          }
+          #restart-btn {
+            padding: 10px 20px;
+            font-size: 1.5em;
+            color: white;
+            background-color: red;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+          }
+
+
+        #ventanaPausa{
+            display: none;
+            position: absolute;
+            top: 100px;
+            left: 300px;
+            width: 50%;
+            height: 50%;
+            background-color: rgba(139, 23, 23, 0.488);
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+            border-radius: 50px;
+        }
+        #ventanaPausa h1{
+            font-size: 4em;
+            color:aliceblue;
+
+        }
+        #pausa-btn {
+            padding: 10px 20px;
+            font-size: 1.5em;
+            color: white;
+            background-color: red;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        #irMenu-btn {
+            margin-top: 50px;
+            padding: 10px 20px;
+            font-size: 1.5em;
+            color: white;
+            background-color: red;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+       
+
+    </style>
+</head>
+<body>
+    <canvas id="myCanvas" width="1700" height="900" style="border:1px solid grey"></canvas>
+
+
+    <div id="ventanaGameOver">
+        <h1>Game Over</h1>
+        <p>KILLS:  </p>
+        <p id="txtKills">fndsifsdoifh</p>
+        <p>De nuevo?</p>
+        <button id="restart-btn" onclick="reiniciar()">Reinicar</button>
+    </div>
+
+    <div id="ventanaPausa">
+        <h1>PAUSA</h1>
+        <p></p>
+        <button id="pausa-btn" onclick="quitarPausa()">Continuar</button>
+        <button id="irMenu-btn" onclick="irMenu()">Menu</button>
+
+    </div>
+    <audio id="sonidoLazer" src="sonidoLazer.wav"></audio>
+    <audio id="sonidoMuerteEnemigo" src="muerteEnemigo.wav"></audio>
+
+
+    <script src="Player.js"></script>
+    <script src="Arma.js"></script>
+    <script src="Particulas.js"></script>
+    <script src="Enemigo.js"></script>
+    <script src="Escudo.js"></script>
+
+
+
+
+
+
+    <script type="text/javascript">
+        const myCanvas = document.getElementById("myCanvas");
+        const ctx = myCanvas.getContext("2d");
+        const gifEnemigo1 = document.getElementById('enemigo1');
+        
+     
+        let sonidoLazer = document.getElementById("sonidoLazer");
+        let sonidoMuerteEnemigo = document.getElementById("sonidoMuerteEnemigo");
+
+        
+
+        var escudo = new Escudo(0,0,80,80,150,false)
+        var jugador = new Player(1700/2,900/2,70,70,20,7,15,0,escudo);  
+        var arma = new Arma(0,0,10,10,3,false); 
+        var enemigos = [];
+        var particulasRestosEnemigos = [];
+        var particulasEscenarioFondo = [];
+        var mouseX 
+        var mouseY 
+        var pausa = false
+
+       
+
+        function showGameOver() {
+            document.getElementById('ventanaGameOver').style.display = 'flex';
+            document.getElementById('txtKills').innerHTML=`${jugador.puntos}`;
+
+        }
+          
+        function reiniciar() {
+          document.getElementById('ventanaGameOver').style.display = 'none';
+          jugador.vida=100
+          jugador.x=1700/2
+          jugador.y=900/2
+          jugador.direccion=5
+          jugador.escudo.vida=150
+          jugador.escudo.activo=false
+          enemigos.forEach(function (enemigo) {
+            enemigo.generarNuevo()
+          })
+        }
+
+        function quitarPausa(){
+            document.getElementById('ventanaPausa').style.display = 'none';
+            pausa=false
+        }
+        function irMenu(){
+            window.location.href = 'menu.html';
+        }
+        cargarVariables()
+        function cargarVariables(){
+            for (let i = 0; i <20; i++) {
+                enemigos[i] = new Enemigo(0,genRandom(850),50,50,7,1,10,0);  
+                particulasRestosEnemigos[i] = new Particulas(0,0,10,10,10,0,true,0);  
+
+            }
+            for (let i = 0; i <100; i++) {
+                particulasEscenarioFondo[i] = new Particulas(
+                    Math.floor(Math.random()*1700)
+                    ,0,3,3,
+                    Math.floor(Math.random()*5+1)
+                    ,0,true,1);  
+            }
+   
+        }
+
+        function genRandom(alcanze){
+            return Math.floor(Math.random()*alcanze);
+        }
+        
+        function iniciarSonidoLazer() {
+            sonidoLazer.play();
+          
+            sonidoLazer.addEventListener("ended", function() {
+                sonidoLazer.currentTime = 0; 
+                sonidoLazer.play();           
+            });
+        }
+
+        function pararSonidoLazer() {
+            sonidoLazer.pause();
+            sonidoLazer.currentTime = 0;
+        }
+
+        function iniciarSonidoMuerteEnemigo() {
+           
+            sonidoMuerteEnemigo.play();
+        }
+
+       
+
+        addEventListener("keydown", (event) => {
+
+            playNextSong()
+          
+            switch(event.keyCode) {
+                case 27:
+                  document.getElementById('ventanaPausa').style.display = 'flex';
+                  pausa=true
+
+                break;
+                case 32:
+                    if(jugador.escudo.activo){
+                        jugador.escudo.activo=false
+                    }else{
+                        jugador.escudo.activo=true
+                    }
+                    break;
+                case 87:
+                   jugador.direccion = 0;
+                    break;
+                case 83:
+                   jugador.direccion = 1;
+                break;
+                case 68:
+                   jugador.direccion = 2;
+                    break;
+                case 65:
+                   jugador.direccion = 3;
+                    break;
+            }
+        });
+
+
+        addEventListener("mousemove", (event) => {
+          mouseX=event.clientX
+          mouseY=event.clientY
+        
+
+        });
+
+        addEventListener("mousedown", (event) => { 
+           if(arma.disparar){
+                arma.disparar=false
+                pararSonidoLazer()
+           }else{
+                arma.disparar=true
+                iniciarSonidoLazer() 
+
+           }
+        });
+
+
+
+        function FuncionesJuego(timestamp){
+
+            
+            if(!pausa){
+                
+                Pintar()
+                jugador.moverJugador()
+                jugador.pintarJugador()
+                arma.pintarLazer(jugador.x,jugador.y,mouseX,mouseY)
+            
+                enemigos.forEach(function (enemigo) {
+                    if(enemigo.vida>0){
+                        if(!validarChoqueConOtroEnemigo(enemigo.x,enemigo.y,enemigo.largo,enemigo.alto,enemigo.direccion,enemigo.velocidad)){
+                            enemigo.mover(jugador.x,jugador.y)  
+                        }
+                        enemigo.validarChoqueConJugador(jugador)
+                        enemigo.pintar()
+                    // enemigo.genNuevaDireccion()
+                        if(arma.disparar && jugador.vida>0){
+                            validarChoqueLazerConEnemigo()
+            
+                        }
+                    }
+                
+                });
+                if(jugador.vida<=0){
+                    showGameOver()
+                }
+            
+            }
+            requestAnimationFrame(FuncionesJuego); 
+
+
+        }
+        requestAnimationFrame(FuncionesJuego);
+
+        function Pintar(){
+            ctx.fillStyle = "black";
+            ctx.fillRect(0,0,1700,900)
+
+            ctx.font = "50px Georgia";
+            ctx.fillStyle = "red";
+            ctx.fillText("PODER INMUNE : "+jugador.escudo.vida, 50, 50);
+
+            ctx.font = "50px Georgia";
+            ctx.fillStyle = "White";
+            ctx.fillText("VIDA : "+jugador.vida, 650, 50);
+
+            ctx.font = "50px Georgia";
+            ctx.fillStyle = "red";
+            ctx.fillText("KILLS : "+jugador.puntos, 1000, 50);
+
+
+            if(jugador.escudo.activo){
+                jugador.escudo.Pintar(jugador)
+            }
+
+            particulasRestosEnemigos.forEach(function (particula) {
+                if(!particula.disponibe){
+                   particula.moverParticula()
+                    ctx.fillStyle = "#02f9f2";
+                    ctx.fillRect(particula.x,particula.y,particula.largo,particula.alto)
+                }
+             
+            });
+
+
+            particulasEscenarioFondo.forEach(function (particula) {
+               
+                particula.moverParticula()
+                ctx.fillStyle = "#36ffce";
+                ctx.fillRect(particula.x,particula.y,particula.largo,particula.alto)    
+             
+            });
+        }
+
+       
+
+
+        
+        function validarChoqueLazerConEnemigo(){
+            enemigos.forEach(function (enemigo){
+                if(enemigo.vida>0){
+                    if(mouseX>=enemigo.x && mouseX<enemigo.x+enemigo.largo && mouseY>=enemigo.y && mouseY<=enemigo.y+enemigo.alto){
+                      enemigo.vida-=arma.dano
+                      if(enemigo.vida<=0){
+                        genParticulasRestosEnemigos(enemigo.x,enemigo.y)
+                        enemigo.generarNuevo()
+                        jugador.puntos++
+                        iniciarSonidoMuerteEnemigo()
+                      }
+                    }
+                }
+            })
+        }
+
+        function genParticulasRestosEnemigos(enemigoX,enemigoY){
+            particulasRestosEnemigos.forEach(function(particula){
+                particula.generar(enemigoX,enemigoY)
+            })
+        }
+
+        function validarChoqueConOtroEnemigo(enemigoX,enemigoY,enemigoLargo,enemigoAlto,enemigoDireccion,enemigoVelocidad){
+            var choqueEnemigo=false
+
+            enemigos.forEach(function (enemigo){
+                if(enemigo.vida>0){
+
+                     //derecha arriba
+                    if(enemigoX<jugador.x && enemigoY>jugador.y ){
+                        if(enemigoX+enemigoLargo+enemigoVelocidad>enemigo.x && enemigoX+enemigoLargo+enemigoVelocidad<enemigo.x+enemigo.largo && enemigoY-enemigoVelocidad>enemigo.y && enemigoY-enemigoVelocidad<enemigo.y+enemigo.alto){
+                            choqueEnemigo=true
+                        }
+                    }
+
+                    //izquierda arriba
+                    if(enemigoX>jugador.x && enemigoX>jugador.y){
+                        if(enemigoX-enemigoVelocidad>enemigo.x && enemigoX-enemigoVelocidad<enemigo.x+enemigo.largo && enemigoY-enemigoVelocidad>enemigo.y && enemigoY-enemigoVelocidad<enemigo.y+enemigo.alto){
+                            choqueEnemigo=true
+                        }               
+                    }
+
+                    //derecha abajo
+                    if(enemigoX<jugador.x && enemigoY<jugador.y){
+                        if(enemigoX+enemigoVelocidad+enemigoLargo>enemigo.x && enemigoX+enemigoLargo+enemigoVelocidad<enemigo.x+enemigo.largo && enemigoY+enemigoAlto+enemigoVelocidad>enemigo.y && enemigoY+enemigoAlto+enemigoVelocidad<enemigo.y+enemigo.alto){
+                            choqueEnemigo=true
+                        }                   
+                    }
+
+                    //izquierda abajo
+                    if(enemigoX>jugador.x && enemigoY<jugador.y){
+                        if(enemigoX-enemigoVelocidad>enemigo.x && enemigoX-enemigoVelocidad<enemigo.x+enemigo.largo && enemigoY+enemigoAlto+enemigoVelocidad>enemigo.y && enemigoY+enemigoAlto+enemigoVelocidad<enemigo.y+enemigo.alto){
+                            choqueEnemigo=true
+                        }              
+                    }
+                 
+
+                }        
+            })
+            return choqueEnemigo
+        }
+
+
+
+        const song1 = new Audio('cancion1.mp3');
+        const song2 = new Audio('cancion2.mp3');
+
+        const playlist = [song1, song2];
+        let itSong = 0;
+
+        function playNextSong() {
+            if (itSong < playlist.length) {
+                playlist[itSong].play();
+
+                playlist[itSong].addEventListener('ended', function() {
+                    itSong++;
+                    playNextSong(); 
+                });
+            }else{
+                itSong=0
+                playNextSong(); 
+
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body {
+            background-color: #000000;
+        }
+        canvas {
+            border: 1px solid grey;
+        }
+        #ventanaMenu{
+            display: flex;
+            position: absolute;
+            top: 350px;
+            left: 750px;
+            width: 20%;
+            height: 50%;
+            background-color: rgba(0, 0, 0, 0.488);
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+            border-radius: 50px;
+        }
+        #play-btn {
+            margin-bottom: 40px;
+            padding: 10px 20px;
+            font-size: 1.5em;
+            color: white;
+            background-color: red;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        #control-btn {
+            margin-bottom: 40px;
+            padding: 10px 20px;
+            font-size: 1.5em;
+            color: white;
+            background-color: red;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        #description-btn {
+            padding: 10px 20px;
+            font-size: 1.5em;
+            color: white;
+            background-color: red;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+
+        #ventanaControles{
+            display: none;
+            position: absolute;
+            top: 300px;
+            left: 750px;
+            width: 20%;
+            height: 55%;
+            background-color: rgba(170, 34, 34, 0.488);
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+            border-radius: 50px;
+        }
+       
+        #ventanaControles-btn-atras{
+            position: absolute;
+            top: 20px; 
+            left: 30px; 
+            padding: 10px 20px;
+            font-size: 1.5em;
+            color: rgb(0, 0, 0);
+            background-color: red;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        #listaControles {          
+            color: aliceblue;
+            position:absolute;
+            top: 130px;
+            left: 30px;
+            list-style-type: none; 
+            padding: 0;
+            margin: 0; 
+            font-size: 1.5em; 
+        }
+       
+
+        #ventanaControles #txtMovimiento {     
+            color: aliceblue;
+            position:absolute;
+            top: 50px;
+            left: 30px; 
+            font-size: 2em;
+            color: aliceblue;
+
+        }
+        #ventanaControles #txtPausa {     
+            color: aliceblue;
+            position:absolute;
+            top: 450px;
+            left: 30px; 
+            font-size: 1.5em;
+            color: aliceblue;
+
+        }
+        #ventanaControles #txtLazer {
+            position:absolute;
+            top: 220px;
+            left: 30px; 
+            font-size: 2em;
+            color: aliceblue;
+
+        }
+        #ventanaControles #txtControlLazer {
+            position:absolute;
+            top: 280px;
+            left: 30px; 
+            font-size: 1.5em;
+            color: aliceblue;
+
+        }
+        #txtEscudo{
+            position:absolute;
+            top: 320px;
+            left: 30px; 
+            font-size: 2em;
+            color: aliceblue;
+        }
+        #txtControlEscudo{
+            position:absolute;
+            top: 380px;
+            left: 30px; 
+            font-size: 1.5em;
+            color: aliceblue;
+        }
+
+
+        #ventanaDescripcion{
+            display: none;
+            position: absolute;
+            top: 350px;
+            left: 550px;
+            width: 40%;
+            height: 50%;
+            background-color: rgba(170, 34, 34, 0.488);
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+            border-radius: 50px;
+        }
+        #ventanaDescripcion #ventanaDescripcion-btn-atras{
+            position: absolute;
+            top: 20px; 
+            left: 30px; 
+            padding: 10px 20px;
+            font-size: 1.5em;
+            color: rgb(0, 0, 0);
+            background-color: red;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        #ventanaDescripcion p{  
+            top: 350px;
+            left: 550px;
+            padding-left: 40px;
+            color: aliceblue;
+            font-size: 2em;   
+        }
+
+
+      
+    </style>
+</head>
+<body>
+    <canvas id="myCanvas"></canvas>
+
+    <div id="ventanaMenu">
+        <button id="play-btn" onclick="ventanaJuego()">J U G A R</button>
+        <button id="control-btn" onclick="ventanaControles()">C O N T R O L E S</button>
+        <button id="description-btn" onclick="ventanaDescripcion()">D E S C R I P C I Ó N</button>
+
+    </div>
+
+    <div id="ventanaControles">
+        <button id="ventanaControles-btn-atras" onclick="quitarVentanaControles()">◄</button>
+        <p id="txtMovimiento">Teclas de Movimiento</p>
+        <ul id="listaControles">
+            <li>
+                Arriba:  W
+            </li>
+            <li>Abajo:  S</li>
+            <li>Derecha:  D</li>
+            <li>Izquierda:  A</li>
+        </ul>
+        <p id="txtLazer">Controles de Lazer</p>
+        <p id="txtControlLazer">Lazer: Click izquierdo</p>
+        <p id="txtEscudo">Controles de Escudo</p>
+        <p id="txtControlEscudo">Tecla: espacio para activar/desactivar</p>
+        <p id="txtPausa">Tecla: ESC para pausa</p>
+
+
+    </div>
+
+    <div id="ventanaDescripcion">
+        <button id="ventanaDescripcion-btn-atras" onclick="quitarVentanaDescripcion()">◄</button>
+        <p>Tomas el control de una pequeña alma, tu objetivo es desintegrar a la mayor cantidad de almas que buscan absorberte.</p>
+        <p>Usa tu rayo de luz para desintegrarlos, usa tu escudo para protegerte cuando más lo necesites, no lo malgastes. </p>
+    </div>
+    
+
+    <script src="Rayo.js"></script>
+
+    <script type="text/javascript">
+        const myCanvas = document.getElementById("myCanvas");
+        const ctx = myCanvas.getContext("2d");
+        var rayos = [];
+        var color1=255;
+        var color2=255;
+        var color3= 120;
+        var subirColor1=false
+
+        window.onload = iniciar;
+        window.onresize = iniciar;
+
+
+        function iniciar() {
+            myCanvas.width = window.innerWidth - 50;
+            myCanvas.height = window.innerHeight - 50;
+            
+            genRayos()
+        }
+
+        function genRayos(){
+            //cargar rayos
+            for(var it=0;it<2;it++){
+                rayos[it] = []
+                rayos[it][0] = new Rayo(
+                    genNumRandom(myCanvas.width),-10,
+                    genNumRandom(myCanvas.width),genNumRandom(myCanvas.height),
+                    5,true
+                )
+                rayos[it][1] = new Rayo(
+                    rayos[it][0].finX,rayos[it][0].finY,
+                    genNumRandom(myCanvas.width),genNumRandom(myCanvas.height),
+                    5,true
+                )
+                rayos[it][2] = new Rayo(
+                    rayos[it][1].finX,rayos[it][1].finY,
+                    genNumRandom(myCanvas.width),genNumRandom(myCanvas.height),
+                    5,true
+                )
+            }  
+        }
+        function ventanaControles(){
+            playNextSong()
+            document.getElementById('ventanaMenu').style.display = 'none';
+            document.getElementById('ventanaControles').style.display = 'flex';
+
+
+        }
+        function quitarVentanaControles(){
+            document.getElementById('ventanaMenu').style.display = 'flex';
+            document.getElementById('ventanaControles').style.display = 'none';
+
+
+        }
+        function ventanaDescripcion(){
+            playNextSong()
+            document.getElementById('ventanaMenu').style.display = 'none';
+            document.getElementById('ventanaDescripcion').style.display = 'flex';
+
+        }
+        function quitarVentanaDescripcion(){
+            document.getElementById('ventanaMenu').style.display = 'flex';
+            document.getElementById('ventanaDescripcion').style.display = 'none';
+
+        }
+        function ventanaJuego(){
+            window.location.href = 'juego.html';
+        }
+        function genColor(){
+            if(subirColor1){
+                color1++
+                if(color1>=255){
+                    subirColor1=false
+                    color3 = Math.floor(Math.random()*200+50)
+                }else{
+                    color2=Math.floor(Math.random()*200+50)
+                }
+            }else{
+                color1--
+                if(color1-1<50){
+                    subirColor1=true
+                }else{
+                    color2=Math.floor(Math.random()*200+50)
+                }
+            }
+        }
+
+        function Rayos(timestamp){
+
+            ctx.fillStyle = "Black";
+            ctx.fillRect(0,0,myCanvas.width,myCanvas.height)
+
+            ctx.font = "100px Georgia";
+            ctx.fillStyle = "red";
+            ctx.clearRect(0, 0, myCanvas.width, myCanvas.height); 
+            ctx.fillText("A S Y L U M", myCanvas.width/2-250, myCanvas.height/2-200);
+    
+            reinicarRayo()
+            if(genNumRandom(10)==0){
+                genColor()
+            }
+            for(var it=0;it<rayos.length;it++){
+                for(var it2=0;it2<rayos[it].length;it2++){
+                    if(rayos[it][0].activo){
+                        ctx.beginPath();
+                        ctx.lineWidth = rayos[it][it2].grosor
+                        ctx.strokeStyle = "rgb("+color1+", "+color2+", "+color3+",100)";;
+                        ctx.moveTo(rayos[it][it2].inicioX,rayos[it][it2].inicioY);
+                        ctx.lineTo(rayos[it][it2].finX,rayos[it][it2].finY);
+                        ctx.stroke();
+                    }
+                }      
+            }
+            requestAnimationFrame(Rayos); 
+        }
+        requestAnimationFrame(Rayos);
+
+        function  genNumRandom(rango){
+            return Math.floor(Math.random()*rango)
+        }
+
+        function reinicarRayo(){
+            for(var it=0;it<rayos.length;it++){
+               
+                if(!rayos[it][0].activo){
+                    rayos[it][0].inicioX = genNumRandom(myCanvas.width);
+                    rayos[it][0].inicioY =  -10;
+                    rayos[it][0].finX = genNumRandom(myCanvas.width);
+                    rayos[it][0].finY =  genNumRandom(myCanvas.height);
+                    rayos[it][0].activo =  true;
+
+
+                    rayos[it][1].inicioX = rayos[it][0].finX;
+                    rayos[it][1].inicioY =  rayos[it][0].finY;
+                    rayos[it][1].finX = genNumRandom(myCanvas.width);
+                    rayos[it][1].finY =  myCanvas.height*0.50;
+
+                    rayos[it][2].inicioX = rayos[it][1].finX;
+                    rayos[it][2].inicioY =  rayos[it][1].finY;
+                    rayos[it][2].finX = genNumRandom(myCanvas.width);
+                    rayos[it][2].finY =  myCanvas.height;
+
+                }    
+            }
+        } 
+
+
+        const song1 = new Audio('cancionMenu.mp3');
+
+        function playNextSong() {
+                song1.play()
+                song1.addEventListener('ended', function() {
+                    playNextSong(); 
+                });   
+        }
+    </script>
+</body>
+</html>
